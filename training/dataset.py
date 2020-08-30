@@ -113,7 +113,7 @@ class TFRecordDataset:
                 if use_raw:
                     tfr_shapes.append(parse_tfrecord_np_raw(record))
                 else:
-                    tfr_shapes.append(parse_tfrecord_np(record).shape)
+                    tfr_shapes.append(parse_tfrecord_np_raw(record))
                 break
 
         # Autodetect label filename.
@@ -169,7 +169,7 @@ class TFRecordDataset:
             if use_raw:
                 dset = dset.map(parse_tfrecord_tf_raw, num_parallel_calls=num_threads)
             else:
-                dset = dset.map(parse_tfrecord_tf, num_parallel_calls=num_threads)
+                dset = dset.map(parse_tfrecord_tf_raw, num_parallel_calls=num_threads)
             dset = tf.data.Dataset.zip((dset, self._tf_labels_dataset))
             bytes_per_item = np.prod(tfr_shape) * np.dtype(self.dtype).itemsize
             if shuffle_mb > 0:
