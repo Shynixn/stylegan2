@@ -110,10 +110,8 @@ class TFRecordDataset:
                 tf.python_io.TFRecordCompressionType.NONE
             )
             for record in tf.python_io.tf_record_iterator(tfr_file, tfr_opt):
-                if use_raw:
-                    tfr_shapes.append(parse_tfrecord_np_raw(record))
-                else:
-                    tfr_shapes.append(parse_tfrecord_np_raw(record))
+                # Changed
+                tfr_shapes.append(parse_tfrecord_np(record).shape)
                 break
 
         # Autodetect label filename.
@@ -166,10 +164,8 @@ class TFRecordDataset:
             dset = tf.data.TFRecordDataset(
                 tfr_file, compression_type="", buffer_size=buffer_mb << 20
             )
-            if use_raw:
-                dset = dset.map(parse_tfrecord_tf_raw, num_parallel_calls=num_threads)
-            else:
-                dset = dset.map(parse_tfrecord_tf_raw, num_parallel_calls=num_threads)
+            # Changed
+            dset = dset.map(parse_tfrecord_tf, num_parallel_calls=num_threads)
             dset = tf.data.Dataset.zip((dset, self._tf_labels_dataset))
             bytes_per_item = np.prod(tfr_shape) * np.dtype(self.dtype).itemsize
             if shuffle_mb > 0:
