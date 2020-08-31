@@ -23,4 +23,4 @@ def main(origin_dir):
         print(image_name, score[0][0])
     print('Done!')
     
- main(sys.argv[1])
+main(sys.argv[1])
